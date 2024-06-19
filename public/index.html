@@ -20,16 +20,21 @@
       if (data.action === 'start') {
         const offset = Date.now() - data.time;
         setTimeout(() => {
+          audio.muted = false;
           audio.play();
         }, offset);
       }
     };
 
     startButton.addEventListener('click', () => {
-      fetch('/start')
-        .then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
+      audio.muted = true; // Mute audio initially
+      audio.play().then(() => {
+        // Fetch request to server to start playback
+        fetch('/start')
+          .then(response => response.text())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+      }).catch(error => console.error('Audio playback failed:', error));
     });
 
     // For synchronizing time with server
