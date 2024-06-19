@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sync Audio Player</title>
+</head>
+<body>
+  <audio id="audio" controls>
+    <source src="path_to_your_audio_file.mp3" type="audio/mpeg">
+  </audio>
+  <button id="startButton">Start Playback</button>
+  <script>
+    const audio = document.getElementById('audio');
+    const startButton = document.getElementById('startButton');
+    const ws = new WebSocket(`ws://${window.location.hostname}`);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.action === 'start') {
+        const offset = Date.now() - data.time;
+        setTimeout(() => {
+          audio.play();
+        }, offset);
+      }
+    };
+
+    startButton.addEventListener('click', () => {
+      fetch('/start')
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    });
+
+    // For synchronizing time with server
+    function syncTimeWithServer() {
+      return new Promise((resolve) => {
+        const startTime = Date.now();
+        ws.send(JSON.stringify({ action: 'syncTime' }));
+        ws.onmessage = (event) => {
+          const serverTime = JSON.parse(event.data).time;
+          const latency = (Date.now() - startTime) / 2;
+          const correctTime = serverTime + latency;
+          resolve(correctTime);
+        };
+      });
+    }
+
+    // Call syncTimeWithServer periodically to maintain synchronization
+    setInterval(() => {
+      syncTimeWithServer().then((correctTime) => {
+        // Adjust playback time if needed
+      });
+    }, 60000);
+  </script>
+</body>
+</html>
