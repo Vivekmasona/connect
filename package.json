@@ -1,0 +1,29 @@
+{
+  "name": "sync-audio-player",
+  "version": "1.0.0",
+  "description": "A web audio player that synchronizes playback across multiple devices",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "ws": "^8.2.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/sync-audio-player.git"
+  },
+  "keywords": [
+    "audio",
+    "sync",
+    "websocket",
+    "express",
+    "nodejs"
+  ],
+  "author": "vivek masona",
+  "license": "MIT"
+}
